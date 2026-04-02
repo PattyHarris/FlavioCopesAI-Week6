@@ -1,0 +1,8 @@
+# BUILD A CLI TOOL - Port Pilot
+
+You're building a tool that runs in the terminal, the place where you spend most of your development time. No HTML, no CSS, no DOM. Just text, colors, and keyboard input.
+
+Port Pilot is a CLI and TUI (terminal user interface) for managing everything running on your machine's ports. Run `ports` with no arguments to see a live, interactive dashboard of every process listening on a port. It shows the port number, PID, project name, framework, memory usage, and uptime. You can kill a process, open it in the browser, or open its project folder in your editor, all with a single keystroke.
+The tool also has direct subcommands for quick actions: `ports check 4321` tells you exactly what's running on that port. `ports kill 4321` kills it. `ports list` prints a static table.
+
+This project teaches you several new concepts. First, CLI architecture: how terminal tools are structured with commands, subcommands, flags, and arguments. Libraries like Commander.js handle argument parsing so you don't have to parse `process.argv` yourself. Second, system programming: querying the operating system for process information using tools like `lsof` and `ps`, then parsing their text output into structured data. Third, TUI development: building an interactive interface in the terminal using Ink (React for the terminal), with keyboard navigation, auto-refresh, and multiple display modes. Fourth, project structure: separating data collection, CLI commands, and TUI rendering into distinct layers so the same `scanPorts()` function serves both the one-off commands and the live dashboard.
