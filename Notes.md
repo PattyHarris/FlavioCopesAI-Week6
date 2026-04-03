@@ -6,3 +6,23 @@ Port Pilot is a CLI and TUI (terminal user interface) for managing everything ru
 The tool also has direct subcommands for quick actions: `ports check 4321` tells you exactly what's running on that port. `ports kill 4321` kills it. `ports list` prints a static table.
 
 This project teaches you several new concepts. First, CLI architecture: how terminal tools are structured with commands, subcommands, flags, and arguments. Libraries like Commander.js handle argument parsing so you don't have to parse `process.argv` yourself. Second, system programming: querying the operating system for process information using tools like `lsof` and `ps`, then parsing their text output into structured data. Third, TUI development: building an interactive interface in the terminal using Ink (React for the terminal), with keyboard navigation, auto-refresh, and multiple display modes. Fourth, project structure: separating data collection, CLI commands, and TUI rendering into distinct layers so the same `scanPorts()` function serves both the one-off commands and the live dashboard.
+
+## Initial Prompt
+
+## Tech Stack
+
+Flavio uses the following tech stack:
+
+For the app I built (Port Pilot), I used TypeScript with Commander.js for CLI parsing, Ink + React for the TUI, chalk for colored output, and execa for running system commands. The tool reads process information from `lsof` (listening TCP ports) and `ps` (memory, uptime), then enriches each entry by walking up from the process working directory to find `package.json` and detect the framework.
+
+## Minimum Requirements
+
+- A binary command (e.g. `ports`) that you can run from anywhere in your terminal
+- An interactive TUI dashboard that opens when running with no arguments
+- Subcommands for quick actions: at least `list`, `check <port>`, `kill <port>`
+- Port scanning that finds all listening TCP ports on the machine
+- Process enrichment: PID, command name, memory usage, and uptime for each port
+- Project detection by finding package.json in the process working directory
+- Framework detection by reading dependencies (Next.js, Astro, Vite, etc.)
+- Keyboard navigation in the TUI (arrow keys or j/k to move, q to quit)
+- Auto-refresh so the TUI updates every few seconds
