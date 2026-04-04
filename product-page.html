@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Port Pilot</title>
+    <style>
+      :root {
+        --paper: #f4efe6;
+        --paper-strong: #fffaf1;
+        --ink: #111111;
+        --muted: #5f5a55;
+        --line: #d6cabc;
+        --signal: #0d7bdc;
+        --signal-dark: #0a4d8c;
+        --terminal: #141414;
+        --terminal-soft: #1f1f1f;
+        --terminal-text: #f5f1e8;
+        --success: #49a36e;
+        --shadow: 0 24px 80px rgba(17, 17, 17, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(13, 123, 220, 0.08), transparent 28%),
+          linear-gradient(180deg, #f8f3eb 0%, #efe7db 100%);
+      }
+
+      a {
+        color: var(--signal-dark);
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 40px 24px 72px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid rgba(17, 17, 17, 0.15);
+        border-radius: 999px;
+        letter-spacing: 0.08em;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 36px;
+        align-items: start;
+        margin-top: 20px;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+      }
+
+      .lede {
+        max-width: 58ch;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid var(--ink);
+        text-decoration: none;
+        color: var(--ink);
+        background: transparent;
+        font-weight: 600;
+      }
+
+      .button.primary {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .terminal-card {
+        border-radius: 28px;
+        overflow: hidden;
+        background: var(--terminal);
+        color: var(--terminal-text);
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .terminal-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: #0f0f0f;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88rem;
+      }
+
+      .terminal-dots {
+        display: flex;
+        gap: 7px;
+      }
+
+      .terminal-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #5c5c5c;
+      }
+
+      .terminal-dots span:first-child {
+        background: #f46e5c;
+      }
+
+      .terminal-dots span:nth-child(2) {
+        background: #f8be4f;
+      }
+
+      .terminal-dots span:nth-child(3) {
+        background: #58c554;
+      }
+
+      .terminal-body {
+        padding: 22px 22px 24px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88rem;
+        line-height: 1.65;
+      }
+
+      .terminal-dim {
+        color: #a4a099;
+      }
+
+      .terminal-blue {
+        color: #6cb6ff;
+      }
+
+      .terminal-green {
+        color: #8dd3a5;
+      }
+
+      .terminal-rule {
+        color: #77726b;
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 64px;
+      }
+
+      .card {
+        padding: 24px;
+        border-radius: 22px;
+        background: rgba(255, 250, 241, 0.82);
+        border: 1px solid var(--line);
+        box-shadow: 0 10px 30px rgba(17, 17, 17, 0.04);
+      }
+
+      .card h2,
+      .panel h2 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      .card p,
+      .panel p,
+      .panel li {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .panels {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        margin-top: 64px;
+      }
+
+      .panel {
+        padding: 28px;
+        border-radius: 26px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.62);
+      }
+
+      pre {
+        margin: 0;
+        padding: 18px;
+        overflow-x: auto;
+        border-radius: 18px;
+        background: var(--terminal-soft);
+        color: var(--terminal-text);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .command-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .command {
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255, 250, 241, 0.72);
+      }
+
+      .command code,
+      .shortcut code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.95rem;
+      }
+
+      .shortcut-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .shortcut {
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+      }
+
+      .footer-note {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .section-grid,
+        .panels,
+        .shortcut-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <span class="eyebrow">Developer Tool</span>
+      <section class="hero">
+        <div>
+          <h1>Port Pilot</h1>
+          <p class="lede">
+            A terminal-first dashboard for everything listening on your machine’s ports.
+            Open the TUI with <code>ports</code>, scan what is running, sort and filter the list,
+            inspect one port, kill a process safely, open localhost in the browser, or jump back
+            into the project folder in your editor.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#setup">Quick Start</a>
+            <a class="button" href="#commands">View Commands</a>
+          </div>
+        </div>
+
+        <div class="terminal-card" aria-label="Port Pilot terminal preview">
+          <div class="terminal-top">
+            <div class="terminal-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div>ports</div>
+          </div>
+          <div class="terminal-body">
+            <div>Port Pilot<span class="terminal-dim">               Filter: Dev Ports   Sort: Memory</span></div>
+            <div class="terminal-dim">Watching 14 listening ports · refreshes every 3s</div>
+            <div> </div>
+            <div>USAGE</div>
+            <div class="terminal-dim">  Use ↑/↓ or j/k to move through listening ports.</div>
+            <div>FLAGS</div>
+            <div class="terminal-dim">  -h, --help        help for ports</div>
+            <div class="terminal-dim">  -v, --version     version for ports</div>
+            <div class="terminal-rule">──────────────────────────────────────────────────────────────</div>
+            <div>SEARCH</div>
+            <div class="terminal-dim">  Type / to search ports, project, framework, or command</div>
+            <div> </div>
+            <div>PORT    PROJECT              FRAMEWORK    PID      MEMORY     UPTIME     COMMAND</div>
+            <div class="terminal-rule">────── ──────────────────── ──────────── ──────── ────────── ────────── ────────────────────</div>
+            <div class="terminal-blue">› 3000   port-pilot           Vite         82114    96.4 MB    00:14:51   node</div>
+            <div class="terminal-blue">  4321   demo-api             Unknown      82166    22.1 MB    00:03:19   node</div>
+            <div class="terminal-green">Selected 3000 · /Users/pattyharris/Documents/FlavioCopesBootcamp/AIBootcamp/week6</div>
+            <div class="terminal-blue">Project detected · e opens /Users/pattyharris/Documents/FlavioCopesBootcamp/AIBootcamp/week6</div>
+            <div class="terminal-rule">──────────────────────────────────────────────────────────────</div>
+            <div>
+              <span>[K]</span> Kill <span>[o]</span> Browser <span class="terminal-blue">[e]</span> Editor
+              <span> [f]</span> Filter:Dev Ports <span>[s]</span> Sort:Memory <span>[/]</span> Search
+              <span> [r]</span> Refresh <span>[q]</span> Quit
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-grid">
+        <article class="card">
+          <h2>See Every Listening Port</h2>
+          <p>
+            Port Pilot scans listening TCP ports with <code>lsof</code>, enriches them with
+            PID, memory, uptime, command, project root, and framework, and brings it together in
+            one place.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Act Without Leaving Terminal</h2>
+          <p>
+            Kill a process with confirmation, open <code>localhost</code> in your browser, or jump
+            straight into the project folder in Cursor or VS Code.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Work The Way You Think</h2>
+          <p>
+            Sort by port, memory, uptime, or project. Filter to dev ports or node-based apps.
+            Search live across ports, project names, frameworks, commands, and paths.
+          </p>
+        </article>
+      </section>
+
+      <section class="panels" id="setup">
+        <article class="panel">
+          <h2>Quick Start</h2>
+          <p>First-time setup can be done in one command:</p>
+          <pre><code>npm run setup</code></pre>
+          <p style="margin-top: 18px;">That script runs install, build, and link for you. Manual setup is also available:</p>
+          <pre><code>npm install
+npm run build
+npm link</code></pre>
+          <p style="margin-top: 18px;">
+            After linking, run <code>ports</code> from anywhere in your terminal.
+          </p>
+        </article>
+
+        <article class="panel" id="commands">
+          <h2>CLI Commands</h2>
+          <div class="command-list">
+            <div class="command"><code>ports</code><br />Open the live terminal dashboard.</div>
+            <div class="command"><code>ports list</code><br />Print a static table of listening ports.</div>
+            <div class="command"><code>ports check &lt;port&gt;</code><br />Show detailed information for one port.</div>
+            <div class="command"><code>ports kill &lt;port&gt;</code><br />Stop the process listening on a port.</div>
+            <div class="command"><code>ports open &lt;port&gt;</code><br />Open <code>http://localhost:PORT</code> in the default browser.</div>
+            <div class="command"><code>ports edit &lt;port&gt;</code><br />Open the project root in Cursor or VS Code.</div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panels">
+        <article class="panel">
+          <h2>TUI Features</h2>
+          <div class="shortcut-grid">
+            <div class="shortcut"><code>↑ ↓</code> or <code>j k</code><br />Move through visible rows.</div>
+            <div class="shortcut"><code>f</code><br />Cycle filters: All Ports, Dev Ports, Node Only.</div>
+            <div class="shortcut"><code>s</code><br />Cycle sorting: Port, Memory, Uptime, Project.</div>
+            <div class="shortcut"><code>/</code><br />Search live across port, project, framework, command, and paths.</div>
+            <div class="shortcut"><code>r</code><br />Refresh immediately and clear search.</div>
+            <div class="shortcut"><code>K</code><br />Kill with a confirmation prompt.</div>
+            <div class="shortcut"><code>o</code><br />Open localhost in the browser.</div>
+            <div class="shortcut"><code>e</code><br />Open the detected project folder in your editor.</div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>How It Works</h2>
+          <p>
+            The CLI is built with TypeScript, Commander.js, Ink, React, chalk, execa, and tsup.
+            Port Pilot uses <code>lsof</code> to discover listening TCP processes, <code>ps</code>
+            to pull memory and uptime, and walks upward from the process working directory to find
+            <code>package.json</code> and detect the framework.
+          </p>
+          <p>
+            Framework detection currently includes Next.js, Astro, Vite, Remix, Nuxt, SvelteKit,
+            and Angular.
+          </p>
+        </article>
+      </section>
+
+      <p class="footer-note">
+        Port Pilot is designed as a daily-use terminal companion for developers who constantly
+        bounce between localhost apps, background servers, and editor windows.
+      </p>
+    </main>
+  </body>
+</html>
